@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 import Link from "next/link";
 import Example from "@/component/pagination";
 
@@ -11,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const inter = Inter({ subsets: ["latin"] });
 
 interface IMovie {
+  _id: string;
   plot: string;
   genres: [string];
   runtime: Number;
@@ -63,12 +63,12 @@ export default function Home({ movies }: IMovies) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1 className="text-5xl text-center p-8 font-bold">Movies List</h1>
+      <h1 className="text-5xl text-center p-8 font-bold">Movies Reweiv List</h1>
       <div className=" container mx-auto">
         <div className="grid grid-cols-4 container">
           {movies.length > 0 &&
             movies.map((movies, idx) => (
-              <div key={idx} className="group card">
+              <div key={idx} className="group card  hover:bg-slate-200">
                 <div className="aspect-[9/12]  group ">
                   <Image
                     src={movies.poster || "/images/zurag.jpeg"}
@@ -92,6 +92,7 @@ export default function Home({ movies }: IMovies) {
                     </div>
                   </div>
                 </div>
+                <Link href={`movies/${movies._id}`}></Link>
               </div>
             ))}
         </div>
