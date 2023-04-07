@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import Example from "@/component/pagination";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -52,9 +54,23 @@ interface IMovie {
 
 interface IMovies {
   movies: IMovie[];
+  pagination: any;
 }
 
-export default function Home({ movies }: IMovies) {
+export default function Home({ movies, pagination }: IMovies) {
+  const [cur, setCur] = useState<number>(1);
+  const [number, setNumber] = useState();
+  const router = useRouter();
+  const pages = [1, 2, 3, 4, 5];
+  console.log("PAGE", pagination);
+
+  const handlePagination = (action: string) => {
+    if (action === "next") {
+      router.replace(`?limit=4&page=${pagination.page + 1}`);
+    } else {
+      router.replace(`?limit=4&page=${pagination.page - 1}`);
+    }
+  };
   return (
     <div className=" h-screen ">
       <Head>
@@ -63,47 +79,63 @@ export default function Home({ movies }: IMovies) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <h1 className="text-5xl text-center p-8 font-bold">Movies Reweiv List</h1>
       <div className=" container mx-auto">
         <div className="grid grid-cols-4 container">
           {movies.length > 0 &&
-            movies.map((movies, idx) => (
-              <div key={idx} className="group card  hover:bg-slate-200">
-                <div className="aspect-[9/12]  group ">
-                  <Image
-                    src={movies.poster || "/images/zurag.jpeg"}
-                    alt="moviePhoto"
-                    width={300}
-                    height={300}
-                    className="w-full h-full object-cover rounded"
-                  />
-                  <div className=" text-2xl p-5 ">{movies.title}</div>
-                  <div className="grid grid-cols-2 mx-auto mb-0 p-2.5">
-                    <div className="w-21 text-center mx-2 border-dotted border-2 border-red-700">
-                      IMDB:
-                      {movies.imdb.rating}%
-                    </div>
-                    <div className="grid grid-cols-2 border-dotted border-2 border-yellow-500  text-center w-20 mx-20">
-                      {movies.tomatoes.viewer.rating}
-                      <FontAwesomeIcon
-                        className="text-yellow-500 w-5 mx-3"
-                        icon={faStar}
-                      />
+            movies?.map((movie, idx) => (
+              <Link href={`movies/${movie._id}`} passHref>
+                <div key={idx} className="group card  hover:bg-slate-200">
+                  <div className="aspect-[9/12]  group ">
+                    <Image
+                      src={movie.poster || "/images/zurag.jpeg"}
+                      alt="moviePhoto"
+                      width={300}
+                      height={300}
+                      className="w-full h-full object-cover rounded"
+                    />
+                    <div className=" text-2xl p-5 ">{movie.title}</div>
+                    <div className="grid grid-cols-2 mx-auto mb-0 p-2.5">
+                      <div className="w-21 text-center mx-2 border-dotted border-2 border-red-700">
+                        IMDB:
+                        {movie.imdb.rating}%
+                      </div>
+                      <div className="grid grid-cols-2 border-dotted border-2 border-yellow-500  text-center w-20 mx-20">
+                        {movie.tomatoes?.viewer?.meter || "..."}%
+                        <FontAwesomeIcon
+                          className="text-yellow-500 w-5 mx-3"
+                          icon={faStar}
+                        />
+                      </div>
                     </div>
                   </div>
+                  Read more...
                 </div>
-                <Link href={`movies/${movies._id}`}></Link>
-              </div>
+              </Link>
             ))}
         </div>
-        <Example />
+        <Example
+          pages={pages}
+          cur={pagination.page}
+          nextPage={() => {
+            handlePagination("next");
+          }}
+          prevPage={() => {
+            handlePagination("prev");
+          }}
+        />
       </div>
     </div>
   );
 }
-export async function getServerSideProps() {
-  const result = await fetch("http://localhost:8000/movies");
+export async function getServerSideProps(ctx: any) {
+  const { page, limit } = ctx.query;
+  const result = await fetch(
+    `http://localhost:8000/movies?limit=${limit || 20}&page=${page || 1}`
+  );
   const data = await result.json();
-  console.log("MOVIES IRLEE", data.movies);
-  return { props: { movies: data.movies } };
+  console.log(data);
+  // console.log("MOVIES IRLEE", data.movies);
+  return { props: { movies: data.movies, pagination: data.pagination } };
 }
