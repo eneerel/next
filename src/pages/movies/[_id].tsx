@@ -16,31 +16,42 @@ export default function Movie({ movie }: any) {
     return <div> Loading ...</div>;
   }
   return (
-    <div className="mx-auto shadow-2xl container w-80 h-92 p-10">
-      <div>
+    <div className="cardDet p-5">
+      <div className="flex">
         <Image
           src={movie.poster || "/images/zurag.jpeg"}
           alt="moviePhoto"
-          width={100}
-          height={100}
-          className="w-full h-full object-cover rounded"
+          width={300}
+          height={300}
+          className=" rounded"
         />
-        <div className=" text-3xl p-5 ">{movie.title}</div>
-        <div className="text-2xl">{movie.plot}</div>
-        <div className="grid grid-cols-2 mx-auto mb-0 p-2.5">
-          <div className="w-21 text-center mx-2 border-dotted border-2 border-red-700">
-            IMDB:
-            {movie.imdb.rating}%
-          </div>
-          <div className="grid grid-cols-2 border-dotted border-2 border-yellow-500  text-center w-20 mx-20">
-            {movie.tomatoes.viewer.rating}
-            <FontAwesomeIcon
-              className="text-yellow-500 w-5 mx-3"
-              icon={faStar}
-            />
+        <div className="cardMini">
+          {" "}
+          <div className=" text-5xl p-5 font-bold">{movie.title} :</div>
+          <div className="grid grid-cols-2 mx-auto mb-0 p-2.5">
+            <div className="w-21 text-center text-2xl">
+              IMDB:
+              {movie.imdb.rating}%
+            </div>
+            <div className="grid grid-cols-2 text-2xl">
+              <FontAwesomeIcon
+                className="text-yellow-500 w-5 mx-3"
+                icon={faStar}
+              />
+              {movie.tomatoes?.viewer?.meter || "..."}%
+            </div>
           </div>
         </div>
       </div>
+      <div className="text-2xl font-bold m-5 text-stone-600">| MOVIE INFO </div>
+      <div className="text-xl "> {movie.fullplot}</div>
+      <div className="text-xl font-bold ">Genre: {movie.genres}</div>
+      <div className="text-xl font-bold">
+        Orginal Language : {movie.languages}
+      </div>
+      <div className="text-xl font-bold">RunTime : {movie.runtime}m</div>
+      <div className="text-xl font-bold">Producer: {movie.production}</div>
+      <div className="text-xl font-bold">({movie.year})</div>
     </div>
   );
 }

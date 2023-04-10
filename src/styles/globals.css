@@ -11,3 +11,28 @@
     background-color: rgb(237, 234, 234);
   }
 }
+
+@layer components {
+  .cardDet {
+    border-radius: theme("borderRadius.lg");
+    box-shadow: theme("boxShadow.2xl");
+    padding: 10px;
+    margin: 20px;
+    background-color: white;
+    margin: auto;
+    width: 80vw;
+    height: 90vh;
+    margin-top: 100px;
+    padding: 8px;
+  }
+}
+@layer components {
+  .cardMini {
+    margin: 30px;
+    border-radius: theme("borderRadius.lg");
+    padding: 40px;
+    margin: 20px;
+    background-color: rgb(241, 239, 239);
+    width: 60vw;
+  }
+}
